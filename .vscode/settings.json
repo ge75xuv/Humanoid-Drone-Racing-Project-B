@@ -1,0 +1,9 @@
+{
+    "python.analysis.extraPaths": [
+        "/opt/ros/kinetic/lib/python/dist-packages/"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none"
+}
