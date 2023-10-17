@@ -7,7 +7,7 @@
 ################################################################################
 
 
-FROM ros:kinetic-perception-xenial as base-ros
+FROM osrf/ros:kinetic-desktop-full as base-ros
 
 # USE German mirror to speed up things
 RUN cp /etc/apt/sources.list /etc/apt/sources.list.old \
@@ -38,17 +38,33 @@ RUN cp /etc/apt/sources.list /etc/apt/sources.list.old \
     http:\/\/de.archive\.ubuntu\.com\/ubuntu/' /etc/apt/sources.list
 
 # Install apt dependencies
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND teletype
 RUN apt update && \
-        apt install -y --no-install-recommends \
+        yes | apt install -y --no-install-recommends \
         python-catkin-tools \
         python-pip \
-        #ros-kinetic-tf2-ros \
+        "ros-kinetic-nao*" \
         #ros-kinetic-tf \
         #ros-kinetic-fiducial-msgs \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pip dependencies
-#RUN pip install --no-cache-dir \
-#     numpy==1.23.1 \
+# Copy PyNaoQi into image and add to pythonpath
+ADD pynaoqi /pynaoqi
+ENV PYTHONPATH "${PYTHONPATH}:/pynaoqi"
+ENV LD_LIBRARY_PATH "${LD_LIBRARY_PATH}:/pynaoqi"
+
+################################################################################
+################################################################################
+#
+#           Stage: team-ros
+#
+################################################################################
+################################################################################
+
+FROM hrs-ros as team-ros
+
+# set team-specific settings in separate layer to speed up builds
+ENV NAO_IP "10.152.246.123"
 
     
