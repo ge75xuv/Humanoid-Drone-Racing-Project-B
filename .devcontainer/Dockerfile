@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ssh \
         wget \
         zsh \
+        python-catkin-tools \
+        python-pip \
     && rm -rf /var/lib/apt/lists/*
 
 
@@ -42,11 +44,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DEBIAN_FRONTEND teletype
 RUN apt update && \
         yes | apt install -y --no-install-recommends \
-        python-catkin-tools \
-        python-pip \
         "ros-kinetic-nao*" \
-        #ros-kinetic-tf \
-        #ros-kinetic-fiducial-msgs \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy PyNaoQi into image and add to pythonpath

@@ -6,15 +6,7 @@
 			"extensions": [
 				"ms-python.python",
 				"ms-iot.vscode-ros"
-			],
-			"settings": {
-				"terminal.integrated.defaultProfile.linux": "zsh",
-				"terminal.integrated.profiles.linux": {
-					"zsh": {
-						"path": "/bin/zsh"
-					}
-				}
-			}
+			]
 		}
 	},
 	"runArgs": [
