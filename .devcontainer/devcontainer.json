@@ -14,8 +14,7 @@
 		}
 	},
 	"runArgs": [
-		"--network=host",
-		"--privileged"
+		"--network=host"
 	],
 	"mounts": [
 		//{ 
