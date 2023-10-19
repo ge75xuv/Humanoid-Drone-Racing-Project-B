@@ -17,3 +17,6 @@
 - use the ROS extension in vs code for more features
 - Catkin Tools are preinstalled so you can build faster with ```$ catkin build``` instead of ```$ catkin-make```
 - if you want to install packages or do other permanent changes in your container, test them first in the running devcontainer terminal, and if it works, add the change to the bottom of the "Dockerfile" so that they persist over devvontainer rebuilds
+
+# Windows Users
+- please comment out the mapping of the X11 temp folder in the "devcontainer.json" file
