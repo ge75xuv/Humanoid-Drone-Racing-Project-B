@@ -31,3 +31,4 @@ You need a XServer program that is able to host the video output for you. Recomm
 In the "devcontainer.json" do the following:
 - comment out the mapping of the X11 temp folder
 - set the DISPLAY variable from ```${localEnv:DISPLAY}``` to ```:0```
+- disable access control in vcxsrv
