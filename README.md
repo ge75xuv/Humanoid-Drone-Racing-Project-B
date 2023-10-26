@@ -11,12 +11,23 @@
 
 # Settings
 - change the NAO_IP in the "Dockerfile" to the one your robot tells you 
-- for rendering pass-through to work, you need to tell the xserver on the host to accept connections from the devcontainer with: ```$ xhost local:root``` (in a host terminal, only tested on ubuntu)
 
 # Recommendations
 - use the ROS extension in vs code for more features
 - Catkin Tools are preinstalled so you can build faster with ```$ catkin build``` instead of ```$ catkin-make```
 - if you want to install packages or do other permanent changes in your container, test them first in the running devcontainer terminal, and if it works, add the change to the bottom of the "Dockerfile" so that they persist over devvontainer rebuilds
 
-# Windows Users
-- please comment out the mapping of the X11 temp folder in the "devcontainer.json" file
+# Setting up Display Output
+
+## Ubuntu
+for rendering pass-through to work, you need to tell the xserver on the ubuntu host to accept connections from the devcontainer with: ```$ xhost local:root``` (in a host terminal)
+
+## Windows and Mac Users Requirements
+You need a XServer program that is able to host the video output for you. Recommendations:
+- Win: https://sourceforge.net/projects/vcxsrv/ 
+- Mac: https://www.xquartz.org/ 
+
+## Windows Users
+In the "devcontainer.json" do the following:
+- comment out the mapping of the X11 temp folder
+- set the DISPLAY variable from ```${localEnv:DISPLAY}``` to ```:0```
