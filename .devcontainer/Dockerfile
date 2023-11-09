@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zsh \
         python-catkin-tools \
         python-pip \
+        uuid-runtime \
     && rm -rf /var/lib/apt/lists/*
 
 
