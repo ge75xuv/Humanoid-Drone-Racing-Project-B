@@ -22,12 +22,16 @@
 ## Ubuntu
 for rendering pass-through to work, you need to tell the xserver on the ubuntu host to accept connections from the devcontainer with: ```$ xhost local:root``` (in a host terminal)
 
-## Windows and Mac Users Requirements
-You need a XServer program that is able to host the video output for you. Recommendations:
-- Win: https://sourceforge.net/projects/vcxsrv/ 
+## Mac
+You need a XServer program that is able to host the video output for you. Recommendation:
 - Mac: https://www.xquartz.org/ 
 
-## Windows Users
+WIP
+
+## Windows
+You need a XServer program that is able to host the video output for you. Recommendation:
+- Win: https://sourceforge.net/projects/vcxsrv/ 
+
 In the "devcontainer.json" do the following:
 - comment out the mapping of the X11 temp folder
 - set the DISPLAY variable from ```${localEnv:DISPLAY}``` to ```:0```
