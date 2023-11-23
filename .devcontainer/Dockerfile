@@ -7,24 +7,48 @@
 ################################################################################
 
 
-FROM osrf/ros:kinetic-desktop-full as base-ros
+FROM nvidia/cudagl:11.2.2-base-ubuntu16.04 as base-ros
+
 
 # USE German mirror to speed up things
 RUN cp /etc/apt/sources.list /etc/apt/sources.list.old \
     && sed -i -e 's/http:\/\/archive\.ubuntu\.com\/ubuntu\// \
     http:\/\/de.archive\.ubuntu\.com\/ubuntu/' /etc/apt/sources.list
-
+RUN apt-key update && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 4B63CF8FDE49746E98FA01DDAD19BAB3CBF125EA
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         ssh \
+        curl \
         wget \
         zsh \
-        python-catkin-tools \
         python-pip \
-        uuid-runtime \
+        mesa-utils
+RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+
+
+# install bootstrap tools
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    python-rosdep \
+    python-rosinstall \
+    python-vcstools \
+    tzdata \
     && rm -rf /var/lib/apt/lists/*
 
+# setup environment
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
 
+# bootstrap rosdep
+RUN rosdep init \
+    && rosdep update
+
+# install ros packages
+ENV ROS_DISTRO kinetic
+RUN apt-get update && apt-get install -y \
+    ros-kinetic-desktop-full \
+    && rm -rf /var/lib/apt/lists/*
 ################################################################################
 ################################################################################
 #
@@ -38,8 +62,8 @@ FROM base-ros as hrs-ros
 # Install apt dependencies
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBIAN_FRONTEND teletype
-RUN apt update && \
-        yes | apt install -y --no-install-recommends \
+RUN apt-get update && \
+        yes | apt-get install -y --no-install-recommends \
         'ros-kinetic-nao*' \
     && rm -rf /var/lib/apt/lists/*
 
@@ -89,6 +113,13 @@ USER $USERNAME
 ################################################################################
 
 FROM hrs-ros-user as team-ros
+
+# nvidia-container-runtime
+ENV NVIDIA_VISIBLE_DEVICES \
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
 
 # set team-specific settings in separate layer to speed up builds
 ENV NAO_IP "10.152.246.123"
