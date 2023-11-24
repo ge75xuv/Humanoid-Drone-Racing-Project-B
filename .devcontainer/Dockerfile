@@ -15,14 +15,18 @@ RUN cp /etc/apt/sources.list /etc/apt/sources.list.old \
     && sed -i -e 's/http:\/\/archive\.ubuntu\.com\/ubuntu\// \
     http:\/\/de.archive\.ubuntu\.com\/ubuntu/' /etc/apt/sources.list
 RUN apt-key update && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 4B63CF8FDE49746E98FA01DDAD19BAB3CBF125EA
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update \
+    && apt-get remove -y openssl \
+    && apt-get install -y --no-install-recommends \
         git \
         ssh \
+        openssl \
         curl \
         wget \
         zsh \
         python-pip \
-        mesa-utils
+        mesa-utils \
+        build-essential
 RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list
 RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 
@@ -33,7 +37,13 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python-rosdep \
     python-rosinstall \
     python-vcstools \
-    tzdata \
+    python-catkin-tools \
+    tzdata
+    
+
+# fix ssl cert for rosdep
+RUN apt-get install ca-cacert \
+    && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # setup environment
@@ -119,6 +129,14 @@ ENV NVIDIA_VISIBLE_DEVICES \
     ${NVIDIA_VISIBLE_DEVICES:-all}
 ENV NVIDIA_DRIVER_CAPABILITIES \
     ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+# fix openssl dir for rosdep and reinit rosdep 
+# (why does openssl use /home/hkouki/Downloads/openssl/ssl/ as $OPENSSLDIR ???)
+RUN sudo mkdir -p /home/hkouki/Downloads/openssl/ssl \
+    && sudo cp -r /etc/ssl/* /home/hkouki/Downloads/openssl/ssl/ \
+    && sudo rm /etc/ros/rosdep/sources.list.d/20-default.list \
+    && sudo rosdep init \
+    && rosdep update
 
 
 # set team-specific settings in separate layer to speed up builds
