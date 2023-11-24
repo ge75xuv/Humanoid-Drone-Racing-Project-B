@@ -1,6 +1,7 @@
 # HRS Lecture Workspace
 
 # Setup
+- Install [Nvidia-Container-SDK](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 - copy the https link in the top right under "clone"
 - clone with git into local folder: ```$ git clone <address>```
 - open with "Visual Studio Code"
