@@ -1,39 +1,82 @@
-# HRS Lecture Workspace
+# NAO Shooting Game
 
-# Setup
-- Install [Nvidia-Container-SDK](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- copy the https link in the top right under "clone"
-- clone with git into local folder: ```$ git clone <address>```
-- open with "Visual Studio Code"
-- vs code should have the "Remote Development" extension installed
-- there should be a pop-up asking if you want to reopen in devcontainer -> click yes
-- wait for the devcontainer to be set up (you can click on the log printout)
-- open a terminal in vs code and source ROS: ```$ source /opt/ros/kinetic/setup.bash```
+This project is a ROS package that uses NAO robot capabilities to play a target-shooting game.
+The robot scans its field of view, aligns itself with detected targets, and then shoots using a bow.
 
-# Settings
-- change the NAO_IP in the "Dockerfile" to the one your robot tells you 
+Because NAO has limited strength and mobility, one human-assisted step is required while preparing each shot.
 
-# Recommendations
-- use the ROS extension in vs code for more features
-- Catkin Tools are preinstalled so you can build faster with ```$ catkin build``` instead of ```$ catkin-make```
-- if you want to install packages or do other permanent changes in your container, test them first in the running devcontainer terminal, and if it works, add the change to the bottom of the "Dockerfile" so that they persist over devvontainer rebuilds
+## Demo Video
 
-# Setting up Display Output
+[![Watch the demo](https://img.youtube.com/vi/DQU9Ewwm3sM/hqdefault.jpg)](https://youtu.be/DQU9Ewwm3sM)
 
-## Ubuntu
-for rendering pass-through to work, you need to tell the xserver on the ubuntu host to accept connections from the devcontainer with: ```$ xhost local:root``` (in a host terminal)
+Direct link: https://youtu.be/DQU9Ewwm3sM
 
-## Mac
-You need a XServer program that is able to host the video output for you. Recommendation:
-- Mac: https://www.xquartz.org/ 
+## Human Interaction Instructions
 
-WIP
+1. Insert an arrow into the front of the bow.
+2. Help NAO pull the string using the attached 3D-printed tool and cloth piece on its left arm.
+3. Pull the string back fully to store energy.
+4. Touch NAO's head when ready.
+5. NAO will move its left arm to release the tool and fire the arrow.
 
-## Windows
-You need a XServer program that is able to host the video output for you. Recommendation:
-- Win: https://sourceforge.net/projects/vcxsrv/ 
+## Code Execution Instructions
 
-In the "devcontainer.json" do the following:
-- comment out the mapping of the X11 temp folder
-- set the DISPLAY variable from ```${localEnv:DISPLAY}``` to ```:0```
-- disable access control in vcxsrv
+1. Build the workspace:
+
+```bash
+catkin build
+```
+
+2. Source ROS and this project workspace.
+3. Start NAO core nodes:
+
+```bash
+roslaunch nao_bringup nao_full_py.launch
+```
+
+4. Start speech, tactile, and LED modules:
+
+```bash
+roslaunch nao_apps speech.launch
+roslaunch nao_apps tactile.launch
+roslaunch nao_apps leds.launch
+```
+
+5. Start this project's service modules:
+
+```bash
+roslaunch PROJECT nao_service_modules.launch
+```
+
+6. Start the shooting game:
+
+```bash
+rosrun PROJECT main_engine.py
+```
+
+## Project Dependencies
+
+The following ROS components are required:
+
+```cmake
+find_package(catkin REQUIRED COMPONENTS
+  actionlib_msgs
+  cv_bridge
+  geometry_msgs
+  image_transport
+  message_generation
+  naoqi_bridge_msgs
+  roscpp
+  rospy
+  sensor_msgs
+  std_msgs
+  std_srvs
+  tf
+)
+```
+
+Additional Python dependencies:
+
+- numpy
+- cv2 (OpenCV)
+- NAOqi API
