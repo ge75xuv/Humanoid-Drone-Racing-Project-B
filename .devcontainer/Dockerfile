@@ -140,7 +140,7 @@ RUN sudo mkdir -p /home/hkouki/Downloads/openssl/ssl \
 
 
 # set team-specific settings in separate layer to speed up builds
-ENV NAO_IP "10.152.246.123"
+ENV NAO_IP "10.152.246.218"
 # add ros to .bashrc so that its sourced in each terminal
 RUN echo "source /opt/ros/kinetic/setup.bash" >> /home/$USERNAME/.bashrc
 

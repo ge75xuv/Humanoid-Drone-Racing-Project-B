@@ -1,0 +1,1 @@
+Final Project (Shooting Game) is inside src/. Specifically, the PROJECT folder.

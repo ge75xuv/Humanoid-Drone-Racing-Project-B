@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(test)
+project(PROJECT)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -7,7 +7,20 @@ project(test)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  actionlib_msgs
+  cv_bridge
+  geometry_msgs
+  image_transport
+  message_generation
+  naoqi_bridge_msgs
+  roscpp
+  rospy
+  sensor_msgs
+  std_msgs
+  std_srvs
+  tf
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -43,18 +56,21 @@ find_package(catkin REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  Target.msg
+  Target_list.msg
+)
 
-## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+    DIRECTORY srv
+    FILES
+    Vision.srv
+    Control.srv
+    ShootBow.srv
+    SpeakWords.srv
+    CheckHeadTouchResponse.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -64,10 +80,10 @@ find_package(catkin REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  geometry_msgs   naoqi_bridge_msgs  sensor_msgs   std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -100,8 +116,8 @@ find_package(catkin REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES test
-#  CATKIN_DEPENDS other_catkin_pkg
+#  LIBRARIES PROJECT
+#  CATKIN_DEPENDS action_lib cv_bridge geometry_msgs image_transport message_generation message_runtime naoqi_bridge_msgs roscpp rospy sensor_msgs std_msgs std_srvs tf
 #  DEPENDS system_lib
 )
 
@@ -113,12 +129,12 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 # include
-# ${catkin_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/test.cpp
+#   src/${PROJECT_NAME}/PROJECT.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -129,7 +145,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/test_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/PROJECT_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -193,7 +209,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_test.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_PROJECT.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
